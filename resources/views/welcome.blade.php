@@ -56,79 +56,77 @@
             </div>
         </nav>
 
-        <section class="relative min-h-screen flex flex-col items-center justify-center pt-20">
-            <div class="dashboard-preview absolute inset-0 grid grid-cols-1 md:grid-cols-3 gap-6 p-12 opacity-30 pt-32 pointer-events-none">
-                <div class="h-64 glass rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="h-4 w-24 bg-indigo-500/30 rounded-full"></div>
-                    <div class="space-y-3">
-                        <div class="h-8 w-full bg-slate-800 rounded-lg"></div>
-                        <div class="h-8 w-2/3 bg-slate-800 rounded-lg"></div>
-                    </div>
-                </div>
-                <div class="h-64 glass rounded-3xl p-6 flex flex-col justify-between border-indigo-500/20">
-                    <div class="flex justify-center flex-1 items-center">
-                        <div class="h-32 w-32 border-8 border-indigo-500/20 rounded-full border-t-indigo-500"></div>
-                    </div>
-                    <div class="h-4 w-1/2 bg-indigo-500/30 rounded-full mx-auto"></div>
-                </div>
-                <div class="h-64 glass rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="h-4 w-24 bg-indigo-500/30 rounded-full"></div>
-                    <div class="space-y-3">
-                        <div class="h-8 w-full bg-slate-800 rounded-lg"></div>
-                        <div class="h-8 w-2/3 bg-slate-800 rounded-lg"></div>
+        <section class="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
+    
+        @guest
+            <div class="absolute inset-0 z-0 opacity-30 blur-2xl pointer-events-none select-none scale-105">
+                <div class="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-12">
+                    <div class="h-12 w-48 bg-slate-800 rounded-2xl mx-auto"></div>
+                    <div class="grid grid-cols-1 gap-10">
+                        <div class="h-64 glass rounded-[3rem] border border-white/5"></div>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="h-40 glass rounded-[2.5rem] border border-white/5"></div>
+                            <div class="h-40 glass rounded-[2.5rem] border border-white/5"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+        @endguest
 
-            <div class="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-5xl">
-                <h1 class="text-5xl md:text-8xl font-bold tracking-tight mb-8 leading-[1]">
-                    Le verdict de votre <br>
-                    <span class="gradient-text">relation WhatsApp</span>
-                </h1>
-                
-                @auth
-                    <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mb-12 leading-relaxed">
-                        Ravi de vous revoir, <span class="text-white font-bold">{{ explode(' ', Auth::user()->name)[0] }}</span> ! <br>
-                        Vos analyses vous attendent sur votre tableau de bord sécurisé.
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row gap-6 mt-4">
-                        <a href="{{ route('dashboard') }}" class="btn-primary px-12 py-5 rounded-full text-xl font-bold shadow-2xl flex items-center justify-center gap-3 hover:scale-105 transition transform group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 group-hover:translate-x-1 transition-transform">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                            Aller au Tableau de Bord
-                        </a>
+        <div class="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-4xl w-full">
+            
+            @auth
+                <div class="space-y-10">
+                    <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+                        Bonjour, <br>
+                        <span class="gradient-text">{{ explode(' ', Auth::user()->name)[0] }}</span> 👋
+                    </h1>
+                    <a href="{{ route('dashboard') }}" class="btn-primary px-10 py-5 rounded-full text-lg font-bold shadow-2xl hover:scale-105 transition transform inline-block">
+                        Accéder au Tableau de Bord
+                    </a>
+                </div>
+            @else
+                <div class="glass p-10 md:p-16 rounded-[4rem] border border-white/10 shadow-[0_0_100px_rgba(79,70,229,0.25)] backdrop-blur-3xl w-full flex flex-col items-center gap-12">
+                    
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white">
+                        Le verdict de votre <br>
+                        <span class="gradient-text">relation WhatsApp</span>
+                    </h1>
+                    
+                    <div class="space-y-6">
+                        <p class="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                            Obtenez des statistiques précises et un portrait robot de vos conversations grâce à l'alliance de nos <span class="italic font-medium">algorithmes</span> et de notre <span class="italic font-medium">IA</span>.
+                        </p>
+                        <div class="inline-flex px-5 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-medium text-xs md:text-sm">
+                            100% sécurisé : vos données ne quittent jamais votre navigateur.
+                        </div>
                     </div>
-                @else
-                    <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mb-12 leading-relaxed">
-                        Obtenez des statistiques précises et un portrait robot de vos conversations grâce à l'alliance de nos <span class="text-white font-medium italic">algorithmes</span> et de notre <span class="text-white font-medium italic">IA</span>. <br>
-                        <span class="text-indigo-400 font-semibold bg-indigo-400/10 px-4 py-1 rounded-full border border-indigo-400/20">100% sécurisé : vos données ne quittent jamais votre navigateur.</span>
-                    </p>
 
-                    <form action="/analyze" method="POST" enctype="multipart/form-data" id="uploadForm">
-                        @csrf
-                        <input type="file" name="chat_file" id="chat_file" class="hidden" accept=".txt">
-                        
-                        <label for="chat_file" class="btn-primary px-10 py-5 rounded-full text-xl font-bold shadow-2xl flex items-center justify-center gap-3 hover:scale-105 transition transform cursor-pointer group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 group-hover:-translate-y-1 transition-transform">
+                    <div class="flex flex-col items-center gap-10 w-full">
+                        <a href="{{ route('register') }}" class="btn-primary w-full sm:w-auto px-12 py-5 rounded-full text-xl font-bold shadow-xl flex items-center justify-center gap-4 hover:scale-105 transition transform group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 7.5 7.5M12 3v13.5" />
                             </svg>
                             Importer ma conversation
-                        </label>
-                    </form>
-                @endauth
-
-                <div class="mt-12 flex items-center gap-4 text-sm text-slate-500">
-                    <div class="flex -space-x-3">
-                        <div class="size-10 rounded-full border-2 border-slate-950 bg-indigo-500"></div>
-                        <div class="size-10 rounded-full border-2 border-slate-950 bg-purple-500"></div>
-                        <div class="size-10 rounded-full border-2 border-slate-950 bg-pink-500"></div>
+                        </a>
+                        
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="flex -space-x-3">
+                                <div class="size-9 rounded-full border-2 border-slate-950 bg-indigo-500"></div>
+                                <div class="size-9 rounded-full border-2 border-slate-950 bg-purple-500"></div>
+                                <div class="size-9 rounded-full border-2 border-slate-950 bg-pink-500"></div>
+                            </div>
+                            <span class="text-xs text-slate-500 font-medium italic">Déjà +1,000 analyses effectuées aujourd'hui</span>
+                        </div>
                     </div>
-                    <span class="font-medium italic">Déjà +1,000 analyses effectuées aujourd'hui</span>
                 </div>
-            </div>
-        </section>
+            @endauth
+
+        </div>
+
+        <div class="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-[500px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none z-[-1]"></div>
+        <div class="fixed bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-[500px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none z-[-1]"></div>
+    </section>
 
         <footer class="relative z-10 bg-slate-950 border-t border-white/5 pt-20 pb-10 px-6">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
