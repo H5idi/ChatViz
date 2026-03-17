@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +20,17 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::post('/analyze', function (Request $request) {
+    if ($request->hasFile('chat_file')) {
+        $file = $request->file('chat_file');
+
+        $fileName = 'chat_' . auth()->id() . '_' . time() . '.txt';
+        $file->storeAs('chats', $fileName);
+
+        return redirect()->route('dashboard');
+    }
+
+    return back();
+})->middleware(['auth']); 
