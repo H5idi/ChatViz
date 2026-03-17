@@ -10,7 +10,24 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $files = [];
+    if (Storage::exists('chats')) {
+        $allFiles = Storage::files('chats');
+        // On filtre pour n'avoir que les fichiers de l'utilisateur (chat_ID_...)
+        $userPrefix = 'chats/chat_' . auth()->id() . '_';
+        foreach ($allFiles as $file) {
+            if (str_starts_with($file, $userPrefix)) {
+                $files[] = [
+                    'name' => basename($file),
+                    'path' => $file,
+                    'date' => date('d/m/Y H:i', Storage::lastModified($file)),
+                    'size' => round(Storage::size($file) / 1024, 2) . ' KB'
+                ];
+            }
+        }
+    }
+
+    return view('dashboard', ['files' => $files]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Routes publiques
@@ -39,4 +56,15 @@ Route::post('/analyze', function (Request $request) {
     }
 
     return back();
-})->middleware(['auth']); 
+})->middleware(['auth'])->name('analyze');
+
+Route::post('/delete-chat', function (Request $request) {
+    $path = $request->input('path');
+    // Sécurité : on vérifie que le fichier appartient bien à l'utilisateur
+    $userPrefix = 'chats/chat_' . auth()->id() . '_';
+    if (str_starts_with($path, $userPrefix) && Storage::exists($path)) {
+        Storage::delete($path);
+        return back()->with('success', 'Analyse supprimée.');
+    }
+    return back()->with('error', 'Action non autorisée.');
+})->middleware(['auth'])->name('delete-chat');
