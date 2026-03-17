@@ -86,7 +86,7 @@
             </h1>
             
             <p class="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed">
-                Obtenez des statistiques précises et un portrait robot de vos conversations grâce à notre IA. <br>
+                Obtenez des statistiques précises et un portrait robot de vos conversations grâce à l'alliance de nos <span class="text-white font-medium">algorithmes</span> et de notre <span class="text-white font-medium">IA</span>. <br>
                 <span class="text-indigo-400 font-semibold">100% sécurisé : vos données ne quittent jamais votre navigateur.</span>
             </p>
 
