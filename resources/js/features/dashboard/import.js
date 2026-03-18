@@ -1,76 +1,93 @@
+/**
+ * import.js
+ * Responsabilité : Gérer uniquement l'interface utilisateur du Drag & Drop
+ * et du bouton d'importation. Délègue le parsing à parser.js.
+ */
+
+import { parseChat } from './parser.js';
+
+/**
+ * Fonction utilitaire : affiche ou cache l'overlay de drop.
+ */
+function setOverlayVisible(overlay, visible) {
+    if (visible) {
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+    } else {
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+    }
+}
+
+/**
+ * Traite un fichier File : vérifie l'extension, lance le parsing.
+ */
+async function handleFile(file) {
+    if (!file.name.toLowerCase().endsWith('.txt')) {
+        alert('Format invalide : seul les fichiers .txt sont acceptés.');
+        return;
+    }
+
+    const messages = await parseChat(file);
+
+    // Pour l'instant on affiche dans la console.
+    // Prochaine étape : on passera les données aux fonctions de stats et de rendu.
+    console.log('[ChatViz] Données prêtes :', messages);
+}
+
+/**
+ * Initialise tous les événements Drag & Drop et le bouton d'import.
+ */
 export function initImport() {
     const dropOverlay = document.getElementById('drop-overlay');
-    const fileInput = document.getElementById('chat_file');
-    const uploadForm = document.getElementById('uploadForm');
+    const fileInput   = document.getElementById('chat_file');
 
-    if (!dropOverlay || !fileInput || !uploadForm) return;
+    if (!dropOverlay || !fileInput) return;
 
     let dragCounter = 0;
 
-    // Fonction pour bloquer les comportements par défaut
-    const preventDefaults = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-
-    // On applique la prévention sur tout le window
+    // --- Blocage des comportements par défaut du navigateur ---
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        window.addEventListener(eventName, preventDefaults, false);
+        window.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, false);
     });
 
-    // Effet visuel lors du survol de la fenêtre
-    window.addEventListener('dragenter', (e) => {
+    // --- Apparition de l'overlay ---
+    window.addEventListener('dragenter', () => {
         dragCounter++;
-        if (dragCounter === 1) {
-            dropOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            dropOverlay.classList.add('opacity-100');
-        }
+        if (dragCounter === 1) setOverlayVisible(dropOverlay, true);
     });
 
-    window.addEventListener('dragleave', (e) => {
+    window.addEventListener('dragleave', () => {
         dragCounter--;
         if (dragCounter <= 0) {
             dragCounter = 0;
-            dropOverlay.classList.remove('opacity-100');
-            dropOverlay.classList.add('opacity-0', 'pointer-events-none');
+            setOverlayVisible(dropOverlay, false);
         }
     });
 
-    // Indispensable pour que le 'drop' fonctionne
+    // Nécessaire pour autoriser le "drop"
     window.addEventListener('dragover', (e) => {
         e.dataTransfer.dropEffect = 'copy';
     });
 
-    // Traitement du fichier lors du lâcher
+    // --- Réception du fichier par glisser-déposer ---
     window.addEventListener('drop', (e) => {
         dragCounter = 0;
-        dropOverlay.classList.remove('opacity-100');
-        dropOverlay.classList.add('opacity-0', 'pointer-events-none');
+        setOverlayVisible(dropOverlay, false);
 
         const files = e.dataTransfer.files;
-
         if (files && files.length > 0) {
-            const file = files[0];
-
-            // On vérifie l'extension .txt (insensible à la casse)
-            if (file.name.toLowerCase().endsWith('.txt')) {
-                // Création d'un conteneur de fichiers compatible Safari/Mac
-                const container = new DataTransfer();
-                container.items.add(file);
-                fileInput.files = container.files;
-
-                // On simule un clic ou on soumet directement
-                uploadForm.submit();
-            } else {
-                alert("Format invalide : seul les fichiers .txt sont acceptés.");
-            }
+            handleFile(files[0]);
         }
     });
 
-    // Gestion de l'input classique (si on clique sur le bouton)
+    // --- Réception du fichier via le bouton d'importation ---
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length > 0) {
-            uploadForm.submit();
+            handleFile(fileInput.files[0]);
         }
     });
 }
